@@ -1,0 +1,103 @@
+{
+  "extends": [
+    "eslint:recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2019
+  },
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "rules": {
+    "quotes": [
+      "warn",
+      "double",
+      {
+        "avoidEscape": true
+      }
+    ],
+    "spaced-comment": "off",
+    "object-curly-spacing": [
+      "warn",
+      "never"
+    ],
+    "indent": [
+      "warn",
+      4
+    ],
+    "no-console": "off",
+    "max-len": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "vars": "all",
+        "args": "after-used",
+        "ignoreRestSiblings": false
+      }
+    ],
+    "no-restricted-properties": [
+      "error",
+      {
+        "object": "arguments",
+        "property": "callee",
+        "message": "arguments.callee is deprecated"
+      },
+      {
+        "object": "global",
+        "property": "isFinite",
+        "message": "Please use Number.isFinite instead"
+      },
+      {
+        "object": "self",
+        "property": "isFinite",
+        "message": "Please use Number.isFinite instead"
+      },
+      {
+        "object": "window",
+        "property": "isFinite",
+        "message": "Please use Number.isFinite instead"
+      },
+      {
+        "object": "global",
+        "property": "isNaN",
+        "message": "Please use Number.isNaN instead"
+      },
+      {
+        "object": "self",
+        "property": "isNaN",
+        "message": "Please use Number.isNaN instead"
+      },
+      {
+        "object": "window",
+        "property": "isNaN",
+        "message": "Please use Number.isNaN instead"
+      },
+      {
+        "property": "__defineGetter__",
+        "message": "Please use Object.defineProperty instead."
+      },
+      {
+        "property": "__defineSetter__",
+        "message": "Please use Object.defineProperty instead."
+      },
+      {
+        "object": "Math",
+        "property": "pow",
+        "message": "Use the exponentiation operator (**) instead."
+      }
+    ],
+    "no-constant-condition": [
+      "error",
+      {
+        "checkLoops": false
+      }
+    ]
+  }
+}

@@ -7,11 +7,14 @@
     "build": "npm run clean && parcel build src/manifest.json --no-source-maps --no-content-hash --target browser",
     "watch": "parcel watch src/manifest.json --target browser",
     "clean": "node clean.js",
-    "pack": "web-ext build -s dist/ --overwrite-dest",
-    "start:firefox": "web-ext run -s dist/"
+    "lint": "eslint src/**/**.ts",
+    "lint-fix": "eslint src/**/**.ts --fix"
   },
   "devDependencies": {
     "@types/semver": "^6.0.2",
+    "@typescript-eslint/eslint-plugin": "^2.3.0",
+    "@typescript-eslint/parser": "^2.3.0",
+    "eslint": "^6.4.0",
     "parcel-bundler": "^1.12.3",
     "parcel-plugin-web-extension": "^1.5.2",
     "typescript": "^3.6.3",

@@ -3,6 +3,7 @@
   "name": "NPM nested dependencies count",
   "description": "Add the total number of nested dependencies on npm",
   "version": "1.0.0",
+  "homepage_url": "https://github.com/bibo5088/npm-nested-dep",
   "content_scripts": [
     {
       "matches": [

@@ -1,0 +1,27 @@
+{
+  "name": "npm-nested-dep",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run clean && parcel build src/manifest.json --no-source-maps --no-content-hash --target browser",
+    "watch": "parcel watch src/manifest.json --target browser",
+    "clean": "node clean.js",
+    "pack": "web-ext build -s dist/ --overwrite-dest",
+    "start:firefox": "web-ext run -s dist/"
+  },
+  "devDependencies": {
+    "@types/semver": "^6.0.2",
+    "parcel-bundler": "^1.12.3",
+    "parcel-plugin-web-extension": "^1.5.2",
+    "typescript": "^3.6.3",
+    "web-ext": "^3.1.1",
+    "webextension-polyfill-ts": "^0.10.0"
+  },
+  "dependencies": {
+    "semver": "^6.3.0"
+  },
+  "browserslist": [
+    "last 1 Chrome versions"
+  ]
+}

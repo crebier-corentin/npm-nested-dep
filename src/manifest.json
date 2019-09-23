@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "NPM nested dependencies count",
+  "description": "Add the total number of nested dependencies on npm",
+  "version": "1.0.0",
+  "content_scripts": [
+    {
+      "matches": [
+        "*://npmjs.com/package/*",
+        "*://www.npmjs.com/package/*"
+      ],
+      "js": [
+        "index.ts"
+      ]
+    }
+  ],
+  "background": {
+    "scripts": [
+      "background.ts"
+    ]
+  },
+  "permissions": [
+    "*://registry.npmjs.org//*"
+  ]
+}

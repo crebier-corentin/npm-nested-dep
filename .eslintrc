@@ -98,6 +98,7 @@
       {
         "checkLoops": false
       }
-    ]
+    ],
+    "semi": ["warn", "always"]
   }
 }

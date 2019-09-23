@@ -29,7 +29,7 @@ export function findDependenciesElement(): HTMLElement | null {
 
     if (packageName !== null && depElement !== null) {
 
-        const nestedDepCount = await browser.runtime.sendMessage({name: packageName, version: "latest"});
+        const nestedDepCount = await browser.runtime.sendMessage({name: packageName});
 
         depElement.append(document.createElement("br"));
 
@@ -39,7 +39,7 @@ export function findDependenciesElement(): HTMLElement | null {
         nestedDepNumberSpan.innerText = nestedDepCount.toString();
 
         depElement.appendChild(nestedDepNumberSpan);
-        depElement.append("Nested Dependencies")
+        depElement.append("Nested Dependencies");
 
     }
 })();

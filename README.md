@@ -13,6 +13,7 @@ Hopefully this extension will make developers more cautious of packages and cons
 
 ### Firefox installation
 You can find the addon here : https://addons.mozilla.org/fr/firefox/addon/npm-nested-dependencies-count/  
+
 You can also install it manually : 
 * Download one of the [releases](https://github.com/bibo5088/npm-nested-dep/releases)
 * Go to `about:addons`
@@ -21,7 +22,7 @@ You can also install it manually :
 
 ### Manual Chrome Installation
 This extension is not yet available in the chrome web store.  
-In the meantime you can still manually install it.
+In the meantime you can still manually install it :
 
 * Download a [releases](https://github.com/bibo5088/npm-nested-dep/releases) and extract it somewhere
 * Go to `chrome://extensions/`

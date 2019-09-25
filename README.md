@@ -1,5 +1,7 @@
 # NPM nested dependencies count
-![standard depencies, 9 direct dependencies, 716 nested dependencies](docs/standard-dependencies.png)  
+![standard dependencies, 9 direct dependencies, 208 nested dependencies](docs/standard-dependencies.png)  
+![express dependencies, 30 direct dependencies, 51 nested dependencies](docs/express-dependencies.png)  
+![webpack dependencies, 23 direct dependencies, 339 nested dependencies](docs/webpack-dependencies.png)  
 A simple browser extension that shows you the total count of nested dependencies for an npm package.
 
 ### Why?

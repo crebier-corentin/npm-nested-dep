@@ -1,9 +1,9 @@
 import {browser} from "webextension-polyfill-ts";
-import {Packages} from "~/packages.ts";
+import {Package} from "~package";
 
 browser.runtime.onMessage.addListener(message => {
 
-    const packages = new Packages();
+    const pack = new Package(message.name, "latest");
 
-    return packages.getDependenciesCount(message.name);
+    return pack.getDependenciesCount();
 });

@@ -23,7 +23,8 @@ export function findDependenciesElement(): HTMLElement | null {
     return null;
 }
 
-(async () => {
+
+const showNestedDependenciesCount = async () => {
     const packageName = getPackageName(window.location.href);
     const depElement = findDependenciesElement();
 
@@ -31,16 +32,49 @@ export function findDependenciesElement(): HTMLElement | null {
 
         const nestedDepCount = await browser.runtime.sendMessage({name: packageName});
 
-        depElement.append(document.createElement("br"));
+        let nestedDepNumberSpan = document.getElementById("nested-dep-number-span");
+        if (nestedDepNumberSpan === null) {
+            //Create nestedDepNumberSpan
+            depElement.append(document.createElement("br"));
 
-        const depNumberSpan = depElement.getElementsByTagName("span")[0];
+            const depNumberSpan = depElement.getElementsByTagName("span")[0];
 
-        const nestedDepNumberSpan = <HTMLSpanElement>depNumberSpan.cloneNode();
+            nestedDepNumberSpan = <HTMLSpanElement>depNumberSpan.cloneNode();
+            nestedDepNumberSpan.id = "nested-dep-number-span";
+
+            depElement.appendChild(nestedDepNumberSpan);
+            depElement.append("Nested Dependencies");
+        }
+
         nestedDepNumberSpan.innerText = nestedDepCount.toString();
 
-        depElement.appendChild(nestedDepNumberSpan);
-        depElement.append("Nested Dependencies");
-
     }
-})();
+};
+
+window.addEventListener("load", () => {
+    console.log("load");
+    showNestedDependenciesCount();
+
+    //Since npmjs is a SPA we need to check periodically if the url changed to update the count
+    let previousUrl = window.location.href;
+    setInterval(() => {
+        if (previousUrl !== window.location.href) {
+            previousUrl = window.location.href;
+
+            //Set nestedDepNumberSpan to '...'
+            const nestedDepNumberSpan = document.getElementById("nested-dep-number-span");
+            if (nestedDepNumberSpan !== null) {
+                nestedDepNumberSpan.innerText = "...";
+            }
+
+            showNestedDependenciesCount();
+        }
+    }, 1000);
+
+});
+
+window.addEventListener("popstate", () => {
+    console.log("popstate");
+    showNestedDependenciesCount();
+});
 

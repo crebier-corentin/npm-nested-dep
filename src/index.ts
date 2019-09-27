@@ -1,12 +1,24 @@
 import {browser} from "webextension-polyfill-ts";
 
-const packageNameRegex = new RegExp("npmjs\\.com\\/package\\/(.+)\\/?");
+const packageNameRegex = new RegExp("npmjs\\.com\\/package\\/([^\\/]+)\\/?");
+const packageVersionRegex = new RegExp("npmjs\\.com\\/package\\/.+\\/v\\/([^\\/]+)\\/?");
 
 export function getPackageName(url: string): string | null {
     const result = packageNameRegex.exec(url);
 
     if (result === null) {
         return null;
+    }
+
+    //First capturing group
+    return result[1];
+}
+
+export function getPackageVersion(url: string): string | "latest" {
+    const result = packageVersionRegex.exec(url);
+
+    if (result === null) {
+        return "latest";
     }
 
     //First capturing group
@@ -26,11 +38,12 @@ export function findDependenciesElement(): HTMLElement | null {
 
 const showNestedDependenciesCount = async () => {
     const packageName = getPackageName(window.location.href);
+    const packageVersion = getPackageVersion(window.location.href);
     const depElement = findDependenciesElement();
 
     if (packageName !== null && depElement !== null) {
 
-        const nestedDepCount = await browser.runtime.sendMessage({name: packageName});
+        const nestedDepCount = await browser.runtime.sendMessage({name: packageName, version: packageVersion});
 
         let nestedDepNumberSpan = document.getElementById("nested-dep-number-span");
         if (nestedDepNumberSpan === null) {
@@ -52,7 +65,6 @@ const showNestedDependenciesCount = async () => {
 };
 
 window.addEventListener("load", () => {
-    console.log("load");
     showNestedDependenciesCount();
 
     //Since npmjs is a SPA we need to check periodically if the url changed to update the count
@@ -73,8 +85,5 @@ window.addEventListener("load", () => {
 
 });
 
-window.addEventListener("popstate", () => {
-    console.log("popstate");
-    showNestedDependenciesCount();
-});
+window.addEventListener("popstate", showNestedDependenciesCount);
 

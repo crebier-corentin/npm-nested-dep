@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "npm run clean && parcel build src/manifest.json --no-source-maps --no-content-hash --target browser",
-    "watch": "parcel watch src/manifest.json --target browser",
+    "watch": "parcel watch src/manifest.json --no-hmr --target browser",
     "clean": "node clean.js",
     "lint": "eslint src/**/**.ts",
     "lint-fix": "eslint src/**/**.ts --fix"
@@ -17,11 +17,11 @@
     "eslint": "^6.4.0",
     "parcel-bundler": "^1.12.3",
     "parcel-plugin-web-extension": "^1.5.2",
-    "typescript": "^3.6.3",
-    "webextension-polyfill-ts": "^0.10.0"
+    "typescript": "^3.6.3"
   },
   "dependencies": {
-    "semver": "^6.3.0"
+    "semver": "^6.3.0",
+    "webextension-polyfill-ts": "^0.10.0"
   },
   "browserslist": [
     "last 1 Chrome versions"

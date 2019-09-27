@@ -3,7 +3,7 @@ import {browser} from "webextension-polyfill-ts";
 const packageNameRegex = new RegExp("npmjs\\.com\\/package\\/([^\\/]+)\\/?");
 const packageVersionRegex = new RegExp("npmjs\\.com\\/package\\/.+\\/v\\/([^\\/]+)\\/?");
 
-export function getPackageName(url: string): string | null {
+function getPackageName(url: string): string | null {
     const result = packageNameRegex.exec(url);
 
     if (result === null) {
@@ -14,7 +14,7 @@ export function getPackageName(url: string): string | null {
     return result[1];
 }
 
-export function getPackageVersion(url: string): string | "latest" {
+function getPackageVersion(url: string): string | "latest" {
     const result = packageVersionRegex.exec(url);
 
     if (result === null) {
@@ -25,7 +25,7 @@ export function getPackageVersion(url: string): string | "latest" {
     return result[1];
 }
 
-export function findDependenciesElement(): HTMLElement | null {
+function findDependenciesElement(): HTMLElement | null {
     for (const span of Array.from(document.querySelectorAll("span"))) {
         if (span.textContent != null && (span.textContent.includes("Dependency") || span.textContent.includes("Dependencies"))) {
             return span;
@@ -35,32 +35,42 @@ export function findDependenciesElement(): HTMLElement | null {
     return null;
 }
 
+const nestedDepCounterPrefix = Math.random().toString(36).substr(2, 9);
+
+function getNestedDepCounter(): HTMLSpanElement | null {
+    const depElement = findDependenciesElement();
+
+    if (depElement === null) {
+        return null;
+    }
+
+    let el = <HTMLSpanElement>document.getElementById(`${nestedDepCounterPrefix}-nested-dep-counter`);
+    if (el === null) {
+        //Create NestedDepCounter
+        depElement.append(document.createElement("br"));
+
+        const depNumberSpan = depElement.getElementsByTagName("span")[0];
+
+        el = <HTMLSpanElement>depNumberSpan.cloneNode();
+        el.id = `${nestedDepCounterPrefix}-nested-dep-counter`;
+        el.innerText = "...";
+
+        depElement.appendChild(el);
+        depElement.append("Nested Dependencies");
+    }
+
+    return el;
+
+}
 
 const showNestedDependenciesCount = async () => {
     const packageName = getPackageName(window.location.href);
     const packageVersion = getPackageVersion(window.location.href);
-    const depElement = findDependenciesElement();
+    const counter = getNestedDepCounter();
 
-    if (packageName !== null && depElement !== null) {
-
+    if (packageName !== null && counter !== null) {
         const nestedDepCount = await browser.runtime.sendMessage({name: packageName, version: packageVersion});
-
-        let nestedDepNumberSpan = document.getElementById("nested-dep-number-span");
-        if (nestedDepNumberSpan === null) {
-            //Create nestedDepNumberSpan
-            depElement.append(document.createElement("br"));
-
-            const depNumberSpan = depElement.getElementsByTagName("span")[0];
-
-            nestedDepNumberSpan = <HTMLSpanElement>depNumberSpan.cloneNode();
-            nestedDepNumberSpan.id = "nested-dep-number-span";
-
-            depElement.appendChild(nestedDepNumberSpan);
-            depElement.append("Nested Dependencies");
-        }
-
-        nestedDepNumberSpan.innerText = nestedDepCount.toString();
-
+        counter.innerText = nestedDepCount.toString();
     }
 };
 
@@ -73,10 +83,10 @@ window.addEventListener("load", () => {
         if (previousUrl !== window.location.href) {
             previousUrl = window.location.href;
 
-            //Set nestedDepNumberSpan to '...'
-            const nestedDepNumberSpan = document.getElementById("nested-dep-number-span");
-            if (nestedDepNumberSpan !== null) {
-                nestedDepNumberSpan.innerText = "...";
+            //Set counter to '...'
+            const counter = getNestedDepCounter();
+            if (counter !== null) {
+                counter.innerText = "...";
             }
 
             showNestedDependenciesCount();

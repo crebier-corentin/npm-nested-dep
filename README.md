@@ -14,7 +14,7 @@ Before installing a package consider this : is it worth it? Are you willing to p
 Hopefully this extension will make developers more cautious of packages and consider not using them in some situations
 
 ### Firefox installation
-You can find the addon here : https://addons.mozilla.org/fr/firefox/addon/npm-nested-dependencies-count/  
+You can find the addon here : https://addons.mozilla.org/en-US/firefox/addon/npm-nested-dependencies-count/  
 
 You can also install it manually : 
 * Download one of the [releases](https://github.com/bibo5088/npm-nested-dep/releases)

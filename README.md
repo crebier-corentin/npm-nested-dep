@@ -22,9 +22,9 @@ You can also install it manually :
 * Click on the settings gear 
 * Click "Install from file" and select the release download previously. 
 
-### Manual Chrome Installation
-This extension is not yet available in the chrome web store.  
-In the meantime you can still manually install it :
+### Chrome Installation
+You can find this extension on the chrome web store https://chrome.google.com/webstore/detail/npm-nested-dependencies-c/mkjkmlmljfcibjmjdbdoiahgpofhfojn
+You can also install it manually (not recommanded) :
 
 * Download a [releases](https://github.com/bibo5088/npm-nested-dep/releases) and extract it somewhere
 * Go to `chrome://extensions/`

@@ -1,4 +1,5 @@
 import {Range, maxSatisfying} from "semver";
+import {Semaphore} from "~Semaphore";
 
 export interface RegistryVersion {
     name: string;
@@ -7,6 +8,7 @@ export interface RegistryVersion {
 }
 
 export interface RegistryPackage {
+    "dist-tags": { [version: string]: string; }
     versions: {
         [version: string]: RegistryVersion;
     };
@@ -18,12 +20,22 @@ export class NPMRegistry {
 
     private static cache: Map<string, Promise<RegistryPackage>> = new Map();
 
-    public static async getPackage(name: string, version: string): Promise<RegistryVersion> {
-        //Latest
-        if (version === "latest") {
-            return NPMRegistry.getPackageLatest(name);
-        }
+    private static fetchSemaphore: Semaphore = new Semaphore(10);
 
+    private static async rateLimitedFetch(url: string) {
+        await this.fetchSemaphore.acquire();
+
+        const result = await fetch(url).catch(reason => {
+            this.fetchSemaphore.release();
+
+            return Promise.reject(reason);
+        });
+
+        this.fetchSemaphore.release();
+        return result;
+    }
+
+    public static async getPackage(name: string, version: string): Promise<RegistryVersion> {
         let pack: RegistryPackage;
         //Check cache before sending request
         if (NPMRegistry.cache.has(name)) {
@@ -31,10 +43,15 @@ export class NPMRegistry {
         }
         //Not in cache
         else {
-            const promise = fetch(`${NPM_REGISTRY_URL}/${name}`)
+            const promise = this.rateLimitedFetch(`${NPM_REGISTRY_URL}/${name}`)
                 .then(res => res.json());
             NPMRegistry.cache.set(name, promise);
             pack = await promise;
+        }
+
+        //Dist tag (latest...)
+        if (pack["dist-tags"].hasOwnProperty(version)) {
+            return pack.versions[pack["dist-tags"][version]];
         }
 
         //Version matching
@@ -48,11 +65,5 @@ export class NPMRegistry {
         }
 
         return pack.versions[rightVersion];
-    }
-
-    public static async getPackageLatest(name: string): Promise<RegistryVersion> {
-        const res = await fetch(`${NPM_REGISTRY_URL}/${name}/latest`);
-
-        return <Promise<RegistryVersion>>res.json();
     }
 }

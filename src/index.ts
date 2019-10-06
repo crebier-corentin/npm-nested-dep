@@ -1,28 +1,34 @@
 import {browser} from "webextension-polyfill-ts";
 
-const packageNameRegex = new RegExp("npmjs\\.com\\/package\\/([^\\/]+)\\/?");
-const packageVersionRegex = new RegExp("npmjs\\.com\\/package\\/.+\\/v\\/([^\\/]+)\\/?");
+const packageNameRegex = new RegExp("npmjs\\.com\\/package\\/(.+)\\/?");
+const packageNameVersionRegex = new RegExp("npmjs\\.com\\/package\\/(.+)\\/v\\/([^\\/]+)\\/?");
+const isVersionUrlRegex = RegExp("\\/v\\/[^\\/]+\\/?$");
 
-function getPackageName(url: string): string | null {
-    const result = packageNameRegex.exec(url);
+function getPackageNameAndVersion(url: string): { name: string, version: string } | null {
 
-    if (result === null) {
-        return null;
+    let name: string;
+    let version: string = "latest";
+
+    if (isVersionUrlRegex.test(url)) {
+        const result = packageNameVersionRegex.exec(url);
+        if (result === null) {
+            return null;
+        }
+
+        name = result[1];
+        version = result[2];
+    }
+    else {
+        const result = packageNameRegex.exec(url);
+        if (result === null) {
+            return null;
+        }
+
+        name = result[1];
     }
 
-    //First capturing group
-    return result[1];
-}
+    return {name, version};
 
-function getPackageVersion(url: string): string | "latest" {
-    const result = packageVersionRegex.exec(url);
-
-    if (result === null) {
-        return "latest";
-    }
-
-    //First capturing group
-    return result[1];
 }
 
 function findDependenciesElement(): HTMLElement | null {
@@ -64,8 +70,13 @@ function getNestedDepCounter(): HTMLSpanElement | null {
 }
 
 const showNestedDependenciesCount = async () => {
-    const packageName = getPackageName(window.location.href);
-    const packageVersion = getPackageVersion(window.location.href);
+
+    const packageNameAndVersion = getPackageNameAndVersion(window.location.href);
+
+    //Do Nothing if the name or version are null
+    if (packageNameAndVersion === null) return;
+
+    const {name: packageName, version: packageVersion} = packageNameAndVersion;
     const counter = getNestedDepCounter();
 
     if (packageName !== null && counter !== null) {
